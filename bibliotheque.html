@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+<script src="../elmove-app.js"></script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="description" content="Bibliothèque — interaktywna mapa uniwersum Elation Movement.">
+
+    <title>Bibliothèque — Elation Movement</title>
+
+    <link rel="stylesheet" href="css/bibliotheque.css">
+</head>
+
+<!-- Google tag (gtag.js) -->
+
+<body>
+
+    <main class="universe">
+
+        <header class="site-header">
+
+            <a class="back-link" href="/index.html">Elmove</a>
+            <div class="header-text">
+                <h1>Bibliothèque</h1>
+                <p>Mapa uniwersum Elation Movement</p>
+            </div>
+
+            <!-- HIPERZEGAR -->
+            <a href="/hyperclockhtml/hyperclock.html" class="hyperclock-link" aria-label="Przejdź do Hiperzegara"
+                title="Hiperzegar">
+                <svg viewBox="0 0 100 100" aria-hidden="true">
+
+                    <circle cx="50" cy="50" r="42" />
+                    <circle cx="50" cy="50" r="29" />
+
+                    <circle cx="50" cy="50" r="3" class="fill" />
+
+                    <line x1="50" y1="50" x2="50" y2="23" />
+                    <line x1="50" y1="50" x2="72" y2="62" />
+
+                    <circle cx="50" cy="8" r="1.7" class="fill" />
+                    <circle cx="92" cy="50" r="1.7" class="fill" />
+                    <circle cx="50" cy="92" r="1.7" class="fill" />
+                    <circle cx="8" cy="50" r="1.7" class="fill" />
+
+                </svg>
+            </a>
+
+        </header>
+
+
+        <!-- MAPA -->
+
+        <section class="map" aria-label="Interaktywna mapa uniwersum">
+
+            <!-- POŁĄCZENIA -->
+
+            <svg class="connections" viewBox="0 0 1200 900" preserveAspectRatio="none" aria-hidden="true">
+
+                <line class="connection" data-from="geneza" x1="336" y1="243" x2="600" y2="432" />
+
+                <line class="connection" data-from="zywioly" x1="204" y1="450" x2="600" y2="432" />
+
+                <line class="connection" data-from="walka" x1="372" y1="630" x2="600" y2="432" />
+
+                <line class="connection" data-from="czas" x1="828" y1="630" x2="600" y2="432" />
+
+                <line class="connection" data-from="percepcja" x1="996" y1="450" x2="600" y2="432" />
+
+                <line class="connection" data-from="uniesienie" x1="864" y1="243" x2="600" y2="432" />
+
+                <line class="connection" data-from="archiwum" x1="600" y1="756" x2="600" y2="432" />
+
+            </svg>
+
+
+            <!-- CENTRUM -->
+
+            <button class="node center" data-node="center" type="button" aria-expanded="false">
+                <span class="node-core"></span>
+                <span class="node-label">Bibliothèque</span>
+            </button>
+
+
+            <!-- GENEZA -->
+
+            <button class="node geneza" data-node="geneza" type="button" aria-expanded="false">
+                <span class="node-core"></span>
+
+                <span class="node-label">
+                    Geneza
+                </span>
+
+                <span class="node-content">
+                    <strong>Geneza</strong>
+
+                    <span>
+                        Początek Ruchu Uniesienia.
+                        Rok 2012, parkour, pierwsze idee
+                        i droga, która zaczęła prowadzić
+                        dalej niż sport.
+                    </span>
+
+                    <em>Odkryj →</em>
+                </span>
+            </button>
+
+
+            <!-- ŻYWIOŁY -->
+
+            <button class="node zywioly" data-node="zywioly" type="button" aria-expanded="false">
+                <span class="node-core"></span>
+
+                <span class="node-label">
+                    Żywioły
+                </span>
+
+                <span class="node-content">
+                    <strong>Żywioły</strong>
+
+                    <span>
+                        Lód, Ogień, Ziemia, Wiatr
+                        i Dźwięk — Ego, Przemiana,
+                        Dusza, Przesłanie i Bóg.
+                    </span>
+
+                    <em>Odkryj →</em>
+                </span>
+            </button>
+
+
+            <!-- DOBRA WALKA -->
+
+            <button class="node walka" data-node="walka" type="button" aria-expanded="false">
+                <span class="node-core"></span>
+
+                <span class="node-label">
+                    Dobra walka
+                </span>
+
+                <span class="node-content">
+                    <strong>Dobra walka</strong>
+
+                    <span>
+                        Droga nie jest prosta.
+                        Upadek, siła, zmiana
+                        i odrodzenie.
+                        A z czym walczymy?
+                    </span>
+
+                    <em>Odkryj →</em>
+                </span>
+            </button>
+
+
+            <!-- CZAS -->
+
+            <button class="node czas" data-node="czas" type="button" aria-expanded="false">
+                <span class="node-core"></span>
+
+                <span class="node-label">
+                    Czas
+                </span>
+
+                <span class="node-content">
+                    <strong>Czas</strong>
+
+                    <span>
+                        Pamięć, chwila, przyszłość,
+                        przeszłość i pytanie
+                        o naturę czasu.
+                    </span>
+
+                    <em>Odkryj →</em>
+                </span>
+            </button>
+
+
+            <!-- PERCEPCJA -->
+
+            <button class="node percepcja" data-node="percepcja" type="button" aria-expanded="false">
+                <span class="node-core"></span>
+
+                <span class="node-label">
+                    Percepcja
+                </span>
+
+                <span class="node-content">
+                    <strong>Percepcja</strong>
+
+                    <span>
+                        Świadomość, podświadomość,
+                        sny, symbole i próba spojrzenia
+                        na rzeczywistość z innej strony.
+                    </span>
+
+                    <em>Odkryj →</em>
+                </span>
+            </button>
+
+
+            <!-- UNIESIENIE -->
+
+            <button class="node uniesienie" data-node="uniesienie" type="button" aria-expanded="false">
+                <span class="node-core"></span>
+
+                <span class="node-label">
+                    Uniesienie
+                </span>
+
+                <span class="node-content">
+                    <strong>Uniesienie</strong>
+
+                    <span>
+                        Moment przekroczenia.
+                        Wspólny rytm, wolność,
+                        siła i doświadczenie przemiany.
+                    </span>
+
+                    <em>Odkryj →</em>
+                </span>
+            </button>
+
+
+            <!-- ARCHIWUM -->
+
+            <button class="node archiwum" data-node="archiwum" type="button" aria-expanded="false">
+                <span class="node-core"></span>
+
+                <span class="node-label">
+                    Archiwum
+                </span>
+
+                <span class="node-content">
+                    <strong>Archiwum</strong>
+
+                    <span>
+                        Teksty, fotografie, filmy,
+                        manifesty i ślady EM.
+                        Wiersz „To było wczoraj…”.
+                    </span>
+
+                    <em>Odkryj →</em>
+                </span>
+            </button>
+
+        </section>
+
+
+        <p class="map-hint">
+            kliknij punkt, aby rozpocząć eksplorację
+        </p>
+
+
+        <article class="poem" id="to-bylo-wczoraj">
+            <p class="poem-kicker">Archiwum</p>
+            <h2>To było wczoraj…</h2>
+            <div class="poem-body">
+
+                <p class="poem-stanza">
+                    Z jeziora
+                </p>
+
+                <p class="poem-stanza">
+                    Dopadła mnie zmora i w tafli widzę tylko odbicie jeziora.<br>
+                    Kikimora jak opatrzność Boża,<br>
+                    ona dzisiaj mnie pochowa.
+                </p>
+
+                <p class="poem-stanza">
+                    Dostała mnie z jeziora i nie ma nic gorszego,<br>
+                    kiedy sam nie umiesz się pokonać.<br>
+                    W tafli jeziora nie ma nawet mnie,<br>
+                    gdy w nie spoglądam.<br>
+                    Jak Nosferatu odbieram moc światu,<br>
+                    gdy znikam, gdy przenikam pustkę<br>
+                    nic nie jest w stanie mnie zatrzymać,<br>
+                    się nie pokonam.
+                </p>
+
+                <p class="poem-stanza">
+                    Moja nieśmiertelna dusza,<br>
+                    jak nieskończona pustka tłumaczy mi,<br>
+                    że nie dotknę dna tej głębi,<br>
+                    nawet w najpłytszych jeziorach.
+                </p>
+
+                <p class="poem-stanza">
+                    Bo istnieje w niej i mam wszystko,<br>
+                    i mam tylko jedno tchnienie -<br>
+                    ożywia mnie i me natchnienie.
+                </p>
+
+                <p class="poem-stanza">
+                    Spoglądam w oczy Bogu<br>
+                    i nie widzę w nich siebie.
+                </p>
+
+                <p class="poem-stanza">
+                    Mam to w sobie jak olśnienie,<br>
+                    które bywa narzędziem do śmigu,<br>
+                    migu cyku i odpływam wraz z nim,
+                </p>
+
+                <p class="poem-stanza">
+                    jak na tafli jeziora,<br>
+                    odbicie z ostatnim księżyca lśnieniem,<br>
+                    nigdy już nie powróci,<br>
+                    jak ta zwrotka, której nie zakłóci nic,<br>
+                    jej biegu, jej cyklu,
+                </p>
+
+                <p class="poem-stanza">
+                    jak w notatniku słów bez liku,<br>
+                    tworzonych niosących treść<br>
+                    w tym gąszczu mianowników.
+                </p>
+
+                <p class="poem-stanza">
+                    I co…
+                </p>
+
+                <p class="poem-stanza">
+                    Ja jestem jakiś inny, bo to robię po swojemu?<br>
+                    Bo nie mam niczego?<br>
+                    Ani odbicia?<br>
+                    Bo tym pocałunkiem śmierci<br>
+                    pożegnałem się z sobą?
+                </p>
+
+                <p class="poem-stanza">
+                    To pożegnanie chłopca<br>
+                    w tafli odbitego.
+                </p>
+
+            </div>
+        </article>
+
+    </main>
+
+    <script src="js/bibliotheque.js"></script>
+
+</body>
+
+</html>

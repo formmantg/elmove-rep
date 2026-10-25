@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<script src="/elmove-app.js"></script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wątek – ELMOVE.CLOUD</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="/socket.io/socket.io.js"></script>
+  <style>
+    .post { background: rgba(0,0,0,0.6); border: 1px solid #333; margin: 12px auto; max-width: 700px; padding: 16px; border-radius: 8px; text-align: left; position: relative; }
+    .post .meta { color: #aaa; font-size: 13px; margin-bottom: 8px; }
+    .delete-btn { position: absolute; top: 10px; right: 10px; background: rgba(40,0,0,0.85); border: 1px solid #c33; color: #ff5555; padding: 4px 10px; border-radius: 6px; cursor: pointer; font-size: 14px; display: none; z-index: 20; opacity: 1 !important; }
+    body.admin-mode .delete-btn { display: inline-block !important; }
+    #admin-pw-overlay {
+      display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); z-index:99999;
+      align-items:center; justify-content:center;
+    }
+    #admin-pw-overlay.open { display:flex; }
+    #admin-pw-box {
+      background:#1a1a1a; border:2px solid #d4af37; border-radius:12px; padding:24px;
+      max-width:340px; width:90%; color:#eee; font-family:system-ui,sans-serif;
+    }
+    #admin-pw-box h3 { margin:0 0 12px; color:#d4af37; }
+    #admin-pw-box input {
+      width:100%; box-sizing:border-box; background:#111; border:1px solid #555;
+      color:#fff; padding:10px; border-radius:6px; margin:12px 0; font-size:15px;
+    }
+    #admin-pw-box .row { display:flex; gap:8px; justify-content:flex-end; }
+    #admin-pw-box button { padding:8px 16px; border:none; border-radius:6px; cursor:pointer; font-weight:600; }
+    #admin-pw-ok { background:#d4af37; color:#111; }
+    #admin-pw-cancel { background:#333; color:#ccc; }
+    .reply-form { max-width: 700px; margin: 16px auto; background: rgba(0,0,0,0.7); padding: 16px; border-radius: 8px; text-align: left; }
+    .reply-form input, .reply-form textarea { width: 100%; background: #111; border: 1px solid #444; color: #fff; padding: 8px; margin-bottom: 8px; border-radius: 4px; box-sizing: border-box; }
+    .em-symbol { width: 40px; height: 40px; object-fit: contain; vertical-align: middle; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>
+      <a href="/forum/index.html" id="back-link">
+        <img src="/images/elmovelogo.png" alt="EM" class="em-symbol" onerror="this.style.display='none'">
+        ← ELMOVE.CLOUD
+      </a>
+    </h1>
+  </header>
+  <div id="admin-pw-overlay">
+    <div id="admin-pw-box">
+      <h3>Hasło admina</h3>
+      <p style="margin:0;font-size:13px;color:#aaa;">Wpisz hasło, aby usuwać.</p>
+      <input type="password" id="admin-pw-input" placeholder="Hasło…" autocomplete="off">
+      <div class="row">
+        <button type="button" id="admin-pw-cancel">Anuluj</button>
+        <button type="button" id="admin-pw-ok">OK</button>
+      </div>
+    </div>
+  </div>
+  <main>
+    <div id="thread-title" style="max-width:700px;margin:20px auto;color:#d4af37;"></div>
+    <div id="posts-list"></div>
+    <div class="reply-form">
+      <h3>Odpowiedz</h3>
+      <input type="text" id="r-author" placeholder="Twój nick">
+      <input type="password" id="r-password" placeholder="Hasło nicku (jeśli zabezpieczony)" style="display:none;">
+      <label id="r-protect-label" style="display:flex;align-items:center;gap:8px;margin-bottom:8px;color:#aaa;font-size:13px;cursor:pointer;">
+        <input type="checkbox" id="r-protect"> Zabezpiecz ten nick hasłem (na stałe)
+      </label>
+      <input type="password" id="r-set-password" placeholder="Ustaw hasło do nicku (min. 3 znaki)" style="display:none;">
+      <textarea id="r-content" rows="3" placeholder="Treść odpowiedzi..."></textarea>
+      <button class="btn" id="r-submit">Wyślij</button>
+    </div>
+  </main>
+  <script>
+    const params = new URLSearchParams(location.search);
+    const threadId = params.get('id');
+    const socket = (typeof io === "function") ? io() : { on(){}, emit(){} };
+    let isAdmin = false;
+    const ADMIN_PASSWORD = 'szczurymiejskie';
+
+    function setAdminUI(on) {
+      isAdmin = !!on;
+      if (on) document.body.classList.add('admin-mode');
+    }
+    window.addEventListener('elmove:admin', () => setAdminUI(true));
+
+    function askAdminPassword() {
+      return new Promise(function(resolve) {
+        var overlay = document.getElementById('admin-pw-overlay');
+        var input = document.getElementById('admin-pw-input');
+        var ok = document.getElementById('admin-pw-ok');
+        var cancel = document.getElementById('admin-pw-cancel');
+        if (!overlay) { resolve(window.prompt('Hasło admina:')); return; }
+        overlay.classList.add('open');
+        input.value = '';
+        setTimeout(function(){ try { input.focus(); } catch(e){} }, 30);
+        function done(val) {
+          overlay.classList.remove('open');
+          ok.onclick = null; cancel.onclick = null; input.onkeydown = null;
+          resolve(val);
+        }
+        ok.onclick = function(){ done(input.value); };
+        cancel.onclick = function(){ done(null); };
+        input.onkeydown = function(e){
+          if (e.key === 'Enter') { e.preventDefault(); done(input.value); }
+          if (e.key === 'Escape') { e.preventDefault(); done(null); }
+        };
+      });
+    }
+
+    async function ensureAdmin() {
+      if (isAdmin) return true;
+      var pw = await askAdminPassword();
+      if (pw === ADMIN_PASSWORD) { setAdminUI(true); return true; }
+      if (pw !== null && pw !== '') alert('Błędne hasło');
+      return false;
+    }
+
+    function escapeHtml(s) {
+      const d = document.createElement('div');
+      d.textContent = s || '';
+      return d.innerHTML;
+    }
+
+    async function load() {
+      const [threadsRes, postsRes] = await Promise.all([
+        fetch('/api/threads'),
+        fetch('/api/posts/' + threadId)
+      ]);
+      const threads = await threadsRes.json();
+      const posts = await postsRes.json();
+      const thread = threads.find(t => String(t.id) === String(threadId));
+      document.getElementById('thread-title').innerHTML = thread
+        ? `<h2>${escapeHtml(thread.title)}</h2><p style="color:#aaa">${escapeHtml(thread.author)} · ${new Date(thread.created).toLocaleString('pl-PL')}</p>`
+        : '<h2>Wątek nie znaleziony</h2>';
+
+      const list = document.getElementById('posts-list');
+      list.innerHTML = '';
+      posts.forEach(p => {
+        const div = document.createElement('div');
+        div.className = 'post';
+        div.innerHTML = `
+          <button class="delete-btn" onclick="deletePost(${p.id})" title="Usuń odpowiedź">🗑 Usuń</button>
+          <div class="meta">${escapeHtml(p.author)} · ${new Date(p.created).toLocaleString('pl-PL')}</div>
+          <p>${escapeHtml(p.content)}</p>
+        `;
+        list.appendChild(div);
+      });
+    }
+
+    window.deletePost = async function(id) {
+      if (!(await ensureAdmin())) return;
+      if (!confirm('Usunąć tę odpowiedź?')) return;
+      await fetch('/api/delete', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: ADMIN_PASSWORD, post_id: id })
+      });
+      load();
+    };
+
+    const rAuthor = document.getElementById('r-author');
+    const rPassword = document.getElementById('r-password');
+    const rProtect = document.getElementById('r-protect');
+    const rSetPassword = document.getElementById('r-set-password');
+    const rProtectLabel = document.getElementById('r-protect-label');
+
+    async function checkNickProtected(nick) {
+      if (!nick || nick.toLowerCase() === 'anonim') return false;
+      try {
+        const res = await fetch('/api/nick/' + encodeURIComponent(nick));
+        const data = await res.json();
+        return !!data.protected;
+      } catch { return false; }
+    }
+
+    let rNickTimer = null;
+    rAuthor.addEventListener('input', () => {
+      clearTimeout(rNickTimer);
+      rNickTimer = setTimeout(async () => {
+        const nick = rAuthor.value.trim();
+        const protected = await checkNickProtected(nick);
+        rPassword.style.display = protected ? 'block' : 'none';
+        rProtectLabel.style.display = protected ? 'none' : 'flex';
+        if (protected) {
+          rProtect.checked = false;
+          rSetPassword.style.display = 'none';
+        }
+      }, 400);
+    });
+    rProtect.addEventListener('change', () => {
+      rSetPassword.style.display = rProtect.checked ? 'block' : 'none';
+    });
+
+    document.getElementById('r-submit').onclick = async () => {
+      const author = rAuthor.value.trim() || 'Anonim';
+      const content = document.getElementById('r-content').value.trim();
+      if (!content) return;
+
+      const body = { thread_id: Number(threadId), author, content };
+      if (rPassword.style.display !== 'none') {
+        body.password = rPassword.value;
+      }
+      if (rProtect.checked && rSetPassword.value) {
+        body.setPassword = rSetPassword.value;
+      }
+
+      const res = await fetch('/api/posts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        alert(data.error || 'Błąd wysyłania');
+        return;
+      }
+      if (data.registered) {
+        alert('Nick „' + author + '” został zabezpieczony hasłem. Od teraz zawsze będzie wymagane.');
+      }
+      document.getElementById('r-content').value = '';
+      rPassword.value = '';
+      rSetPassword.value = '';
+      rProtect.checked = false;
+      rSetPassword.style.display = 'none';
+      load();
+    };
+
+    socket.on('forum:update', () => load());
+    load();
+  </script>
+</body>
+</html>

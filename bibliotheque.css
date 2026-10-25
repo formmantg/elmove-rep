@@ -1,0 +1,724 @@
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  color-scheme: dark;
+  --bg: #0c0b09;
+  --panel: #14120e;
+  --gold: #c6a96a;
+  --gold-bright: #ead6a0;
+  --gold-dim: rgba(198, 169, 106, 0.35);
+  --text: #f4efe4;
+  --muted: #b9b0a0;
+  --line: rgba(198, 169, 106, 0.25);
+}
+
+html {
+  scroll-behavior: smooth;
+  background: var(--bg);
+}
+
+body {
+  margin: 0;
+  background:
+    radial-gradient(ellipse at 50% 36%, rgba(109, 82, 35, 0.11), transparent 48%),
+    var(--bg);
+  color: var(--text);
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+a {
+  color: var(--gold-bright);
+  text-decoration: none;
+}
+
+a:hover {
+  color: #fff0c7;
+}
+
+.universe {
+  min-height: 100vh;
+  width: min(1440px, 100%);
+  margin: 0 auto;
+  padding: 1.5rem clamp(1rem, 4vw, 3.5rem) 5rem;
+}
+
+.site-header {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 0.5rem 0 1.5rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.back-link {
+  flex: 0 0 auto;
+  border: 1px solid var(--gold-dim);
+  border-radius: 999px;
+  padding: 0.55rem 0.9rem;
+  font-size: 0.9rem;
+  letter-spacing: 0.08em;
+}
+
+.header-text {
+  flex: 1;
+  text-align: center;
+  padding-right: 2.5rem;
+}
+
+.header-text h1 {
+  margin: 0;
+  color: var(--gold-bright);
+  font-weight: 400;
+  font-size: clamp(2rem, 4vw, 3.1rem);
+  letter-spacing: 0.12em;
+}
+
+.header-text p {
+  margin: 0.45rem 0 0;
+  color: var(--muted);
+  font-size: 0.92rem;
+  letter-spacing: 0.07em;
+}
+
+.hyperclock-link {
+  width: 48px;
+  height: 48px;
+  flex: 0 0 48px;
+  color: var(--gold);
+}
+
+.hyperclock-link svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+}
+
+.hyperclock-link .fill {
+  fill: currentColor;
+}
+
+.map {
+  position: relative;
+  isolation: isolate;
+  width: 100%;
+  max-width: 1120px;
+  height: clamp(580px, 75vw, 820px);
+  margin: 1.2rem auto 0;
+  overflow: hidden;
+  transform-origin: 50% 50%;
+  transition: opacity 0.7s ease, transform 0.7s cubic-bezier(.2, .75, .2, 1), filter 0.7s ease;
+}
+
+.connections {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.connection {
+  stroke: rgba(198, 169, 106, 0.3);
+  stroke-width: 1.4;
+  vector-effect: non-scaling-stroke;
+  transition: stroke 0.35s ease, stroke-width 0.35s ease, opacity 0.35s ease;
+}
+
+.connection.is-hot {
+  stroke: var(--gold-bright);
+  stroke-width: 2.4;
+  opacity: 1;
+}
+
+.node {
+  position: absolute;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  gap: 0.65rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  cursor: pointer;
+  text-align: center;
+  transform: translate(-50%, -50%);
+}
+
+.node-core {
+  display: block;
+  width: 16px;
+  height: 16px;
+  border: 1px solid var(--gold);
+  border-radius: 50%;
+  background: #17130b;
+  box-shadow: 0 0 0 5px rgba(198, 169, 106, 0.055), 0 0 22px rgba(198, 169, 106, 0.12);
+  transition: background 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.node:hover .node-core,
+.node[aria-expanded="true"] .node-core,
+.node:focus-visible .node-core {
+  background: var(--gold-bright);
+  box-shadow: 0 0 0 7px rgba(198, 169, 106, 0.09), 0 0 30px rgba(234, 214, 160, 0.45);
+  transform: scale(1.12);
+}
+
+.node:focus-visible {
+  outline: 1px solid var(--gold-bright);
+  outline-offset: 8px;
+  border-radius: 4px;
+}
+
+.node-label {
+  display: block;
+  max-width: 160px;
+  color: var(--gold-bright);
+  font-size: clamp(0.9rem, 1.5vw, 1.08rem);
+  letter-spacing: 0.035em;
+  text-shadow: 0 2px 10px #000;
+}
+
+.node.center {
+  left: 50%;
+  top: 48%;
+}
+
+.node.center .node-core {
+  width: 25px;
+  height: 25px;
+  border-width: 1.5px;
+}
+
+.node.center .node-label {
+  font-size: clamp(1.2rem, 2vw, 1.6rem);
+  letter-spacing: 0.12em;
+}
+
+.node.geneza {
+  left: 28%;
+  top: 27%;
+}
+
+.node.zywioly {
+  left: 17%;
+  top: 50%;
+}
+
+.node.walka {
+  left: 31%;
+  top: 70%;
+}
+
+.node.czas {
+  left: 69%;
+  top: 70%;
+}
+
+.node.percepcja {
+  left: 83%;
+  top: 50%;
+}
+
+.node.uniesienie {
+  left: 72%;
+  top: 27%;
+}
+
+.node.archiwum {
+  left: 50%;
+  top: 84%;
+}
+
+.node-content {
+  position: absolute;
+  top: calc(100% + 0.8rem);
+  left: 50%;
+  z-index: 5;
+  display: none;
+  width: min(250px, 72vw);
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--gold-dim);
+  border-radius: 3px;
+  background: rgba(18, 16, 12, 0.97);
+  box-shadow: 0 14px 38px rgba(0, 0, 0, .35);
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.6;
+  text-align: left;
+  transform: translateX(-50%);
+}
+
+.node[aria-expanded="true"] .node-content {
+  display: block;
+}
+
+.node-content strong {
+  display: block;
+  margin-bottom: 0.35rem;
+  color: var(--gold-bright);
+  font-size: 1.02rem;
+  font-weight: 400;
+}
+
+.node-content>span {
+  display: block;
+}
+
+.node-content em {
+  display: inline-block;
+  margin-top: 0.65rem;
+  color: var(--gold-bright);
+  font-style: normal;
+  letter-spacing: 0.04em;
+  text-decoration: underline;
+  text-decoration-color: var(--gold-dim);
+  text-underline-offset: 4px;
+}
+
+.map-hint {
+  margin: -0.1rem auto 2rem;
+  color: var(--muted);
+  font-size: 0.86rem;
+  letter-spacing: 0.06em;
+  text-align: center;
+}
+
+.discovery-panel {
+  width: min(780px, 100%);
+  margin: 0 auto 3rem;
+  padding: clamp(1.5rem, 4vw, 3rem);
+  border: 1px solid var(--gold-dim);
+  background: linear-gradient(145deg, rgba(30, 25, 16, 0.92), rgba(15, 13, 10, 0.97));
+  box-shadow: 0 20px 70px rgba(0, 0, 0, .25);
+  animation: panel-in 0.45s ease both;
+}
+
+.discovery-panel[hidden] {
+  display: none;
+}
+
+.panel-kicker,
+.poem-kicker {
+  margin: 0 0 0.75rem;
+  color: var(--gold);
+  font-size: 0.78rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.discovery-panel h2 {
+  margin: 0;
+  color: var(--gold-bright);
+  font-size: clamp(1.7rem, 4vw, 2.6rem);
+  font-weight: 400;
+}
+
+.discovery-panel h3 {
+  margin: 0.7rem 0 1.2rem;
+  color: var(--muted);
+  font-size: 1rem;
+  font-weight: 400;
+  font-style: italic;
+}
+
+.discovery-panel p {
+  color: #ded6c8;
+  font-size: 1.05rem;
+  line-height: 1.85;
+}
+
+.panel-close,
+.tree-back {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1.2rem;
+  padding: 0.65rem 0.95rem;
+  border: 1px solid var(--gold-dim);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--gold-bright);
+  font: inherit;
+  cursor: pointer;
+}
+
+.panel-close:hover,
+.tree-back:hover {
+  background: rgba(198, 169, 106, 0.1);
+}
+
+.map.is-travelling {
+  opacity: 0.12;
+  filter: blur(5px);
+  transform: scale(0.82) rotateX(9deg);
+  pointer-events: none;
+}
+
+.map.is-arrived {
+  opacity: 1;
+  filter: none;
+  transform: scale(1);
+}
+
+.element-tree {
+  position: absolute;
+  inset: 0;
+  perspective: 1000px;
+  animation: tree-in 0.7s cubic-bezier(.2, .75, .2, 1) both;
+}
+
+.element-tree::before,
+.element-tree::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 48%;
+  border: 1px solid rgba(198, 169, 106, 0.19);
+  border-radius: 50%;
+  transform: translate(-50%, -50%) rotateX(62deg);
+  pointer-events: none;
+}
+
+.element-tree::before {
+  width: 48%;
+  height: 30%;
+}
+
+.element-tree::after {
+  width: 72%;
+  height: 46%;
+  border-color: rgba(198, 169, 106, 0.1);
+}
+
+.element-tree .tree-back {
+  position: absolute;
+  z-index: 8;
+  left: 1rem;
+  top: 1rem;
+  margin: 0;
+}
+
+.element-node {
+  position: absolute;
+  z-index: 3;
+  display: grid;
+  justify-items: center;
+  gap: 0.7rem;
+  padding: 0.4rem;
+  border: 0;
+  background: transparent;
+  color: var(--gold-bright);
+  font: inherit;
+  cursor: pointer;
+  transform: translate(-50%, -50%);
+}
+
+.element-node .node-core {
+  width: 18px;
+  height: 18px;
+}
+
+.element-node[data-element="centrum"] {
+  left: 50%;
+  top: 48%;
+}
+
+.element-node[data-element="ogien"] {
+  left: 50%;
+  top: 20%;
+}
+
+.element-node[data-element="lod"] {
+  left: 24%;
+  top: 47%;
+}
+
+.element-node[data-element="ziemia"] {
+  left: 36%;
+  top: 74%;
+}
+
+.element-node[data-element="wiatr"] {
+  left: 75%;
+  top: 47%;
+}
+
+.element-node[data-element="dzwiek"] {
+  left: 64%;
+  top: 74%;
+}
+
+.element-node[data-element="centrum"] .node-core {
+  width: 26px;
+  height: 26px;
+}
+
+.element-label {
+  font-size: clamp(0.9rem, 1.5vw, 1.12rem);
+  text-shadow: 0 2px 10px #000;
+}
+
+.poem {
+  display: none;
+  width: min(780px, 100%);
+  margin: 0 auto;
+  padding: clamp(1.5rem, 4vw, 3.5rem);
+  border-top: 1px solid var(--gold-dim);
+  border-bottom: 1px solid var(--gold-dim);
+  background: linear-gradient(180deg, rgba(24, 21, 15, 0.45), transparent);
+}
+
+.poem.is-visible {
+  display: block;
+  animation: panel-in 0.5s ease both;
+}
+
+.poem h2 {
+  margin: 0 0 2.2rem;
+  color: var(--gold-bright);
+  font-size: clamp(2rem, 5vw, 3.3rem);
+  font-weight: 400;
+}
+
+.poem-body {
+  color: #e8e0d2;
+  font-size: clamp(1rem, 2vw, 1.14rem);
+  line-height: 1.95;
+}
+
+.poem-stanza {
+  margin: 0 0 1.8rem;
+}
+
+.poem-stanza:first-child {
+  color: var(--gold-bright);
+  font-style: italic;
+}
+
+.reduce-motion,
+.reduce-motion * {
+  animation-duration: 0.01ms !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+
+@keyframes panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes tree-in {
+  from {
+    opacity: 0;
+    transform: rotateX(12deg) scale(.88);
+  }
+
+  to {
+    opacity: 1;
+    transform: rotateX(0) scale(1);
+  }
+}
+
+@media (max-width: 700px) {
+  .universe {
+    padding: 1rem 1rem 3rem;
+  }
+
+  .site-header {
+    gap: 0.7rem;
+  }
+
+  .back-link {
+    padding: 0.45rem 0.65rem;
+    font-size: 0.78rem;
+  }
+
+  .header-text {
+    padding-right: 0;
+  }
+
+  .header-text h1 {
+    font-size: 1.7rem;
+    letter-spacing: 0.06em;
+  }
+
+  .header-text p {
+    font-size: 0.75rem;
+  }
+
+  .hyperclock-link {
+    width: 36px;
+    height: 36px;
+    flex-basis: 36px;
+  }
+
+  .map {
+    height: 690px;
+    margin-top: 0.5rem;
+    overflow: visible;
+  }
+
+  .connections {
+    opacity: 0.7;
+  }
+
+  .node-label {
+    max-width: 105px;
+    font-size: 0.85rem;
+  }
+
+  .node.center .node-label {
+    font-size: 1.12rem;
+  }
+
+  .node.geneza {
+    left: 29%;
+    top: 17%;
+  }
+
+  .node.zywioly {
+    left: 17%;
+    top: 37%;
+  }
+
+  .node.walka {
+    left: 29%;
+    top: 60%;
+  }
+
+  .node.czas {
+    left: 71%;
+    top: 60%;
+  }
+
+  .node.percepcja {
+    left: 83%;
+    top: 37%;
+  }
+
+  .node.uniesienie {
+    left: 71%;
+    top: 17%;
+  }
+
+  .node.archiwum {
+    left: 50%;
+    top: 83%;
+  }
+
+  .node.center {
+    top: 43%;
+  }
+
+  .node-content {
+    width: min(220px, 68vw);
+    font-size: 0.82rem;
+  }
+
+  .element-node[data-element="ogien"] {
+    left: 50%;
+    top: 18%;
+  }
+
+  .element-node[data-element="lod"] {
+    left: 24%;
+    top: 47%;
+  }
+
+  .element-node[data-element="ziemia"] {
+    left: 31%;
+    top: 72%;
+  }
+
+  .element-node[data-element="wiatr"] {
+    left: 81%;
+    top: 42%;
+  }
+
+  .element-node[data-element="dzwiek"] {
+    left: 69%;
+    top: 72%;
+  }
+
+  .element-tree::before {
+    width: 68%;
+    height: 30%;
+  }
+
+  .element-tree::after {
+    width: 96%;
+    height: 46%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* PODŚWIETLANIE WĘZŁÓW DRZEWA ŻYWIOŁÓW */
+.element-tree .element-node {
+  cursor: pointer;
+  transition:
+    transform 0.25s ease,
+    color 0.25s ease,
+    filter 0.25s ease;
+}
+
+.element-tree .element-node .node-core {
+  transition:
+    background 0.25s ease,
+    box-shadow 0.25s ease,
+    transform 0.25s ease;
+}
+
+.element-tree .element-node:hover .node-core,
+.element-tree .element-node:focus-visible .node-core,
+.element-tree .element-node[aria-pressed="true"] .node-core {
+  background: var(--gold-bright, #e7c77a);
+  box-shadow:
+    0 0 12px rgba(231, 199, 122, 0.85),
+    0 0 30px rgba(231, 199, 122, 0.45);
+  transform: scale(1.18);
+}
+
+.element-tree .element-node:hover .element-label,
+.element-tree .element-node:focus-visible .element-label,
+.element-tree .element-node[aria-pressed="true"] .element-label {
+  color: var(--gold-bright, #e7c77a);
+  text-shadow: 0 0 12px rgba(231, 199, 122, 0.45);
+}
+
+.element-tree .element-node:focus-visible {
+  outline: 1px solid var(--gold-bright, #e7c77a);
+  outline-offset: 8px;
+}

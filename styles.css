@@ -1,0 +1,352 @@
+body {
+  font-family: 'Roboto', sans-serif;
+  background: #111;
+  color: #f5f5f5;
+  margin: 0;
+  padding: 0;
+  line-height: 1.6;
+}
+
+h1,
+h2,
+h3 {
+  font-family: 'Georgia', serif;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+h1 {
+  font-size: 48px;
+}
+
+h2 {
+  font-size: 32px;
+}
+
+h3 {
+  font-size: 24px;
+}
+
+p {
+  font-size: 18px;
+  margin-bottom: 25px;
+  color: #ddd;
+}
+
+.tekst {
+  max-width: 700px;
+  margin: 0 auto;
+  /* wyśrodkowanie całego bloku */
+  text-align: center;
+}
+
+.tekst p {
+  margin: 10px 0;
+}
+
+.tekst p:nth-child(even) {
+  margin-left: 0.5cm;
+  /* co drugi akapit */
+}
+
+.symbol {
+  margin-top: 40px;
+  display: flex;
+  justify-content: center;
+}
+
+.symbol img {
+  max-width: 100%;
+  width: clamp(180px, 40vw, 320px);
+  height: auto;
+
+  opacity: 0.9;
+  transition: all 0.6s ease;
+
+  filter: drop-shadow(0 0 10px rgba(255, 180, 80, 0.4));
+  display: block;
+  margin: 0 auto;
+}
+
+.symbol img:hover {
+  transform: scale(1.05);
+  opacity: 1;
+}
+
+.symbol img {
+  filter: drop-shadow(0 0 10px rgba(255, 180, 80, 0.4));
+}
+
+/* ========================= Header i menu ========================= */
+header {
+  background: #111;
+  padding: 30px 20px;
+  text-align: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+  border-bottom: 2px solid #333;
+}
+
+#hero-title {
+  font-family: 'Georgia', serif;
+  font-size: 48px;
+  color: #ffcc00;
+  text-decoration: none;
+  display: inline-block;
+  margin-bottom: 15px;
+  transition: 0.3s;
+}
+
+#hero-title:hover {
+  color: #fff;
+  text-shadow: 0 0 10px #ffcc00;
+}
+
+.button-container {
+  margin-bottom: 25px;
+}
+
+#translate-btn {
+  font-family: 'Roboto', sans-serif;
+  background: #444;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+#translate-btn:hover {
+  background: #666;
+}
+
+nav {
+  background: #111;
+  padding: 15px 0;
+  border-top: 1px solid #333;
+}
+
+nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  gap: 25px;
+}
+
+nav ul li a {
+  color: #fff;
+  text-decoration: none;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 600;
+  padding: 8px 15px;
+  border-radius: 6px;
+  transition: 0.3s;
+}
+
+nav ul li a:hover {
+  background: #ffcc00;
+  color: #000;
+  box-shadow: 0 0 8px rgba(255, 204, 0, 0.7);
+}
+
+/* ========================= Sekcje ========================= */
+main {
+  padding: 2rem;
+  max-width: 1000px;
+  margin: auto;
+}
+
+section {
+  margin-bottom: 50px;
+}
+
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  margin: 20px auto;
+}
+
+table {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+
+  border-collapse: collapse;
+  background: #222;
+
+  border-radius: 10px;
+  overflow: hidden;
+
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+
+  /* KLUCZ: stabilność */
+  min-width: 520px;
+}
+
+th,
+td {
+  padding: 12px 15px;
+  border: 1px solid #444;
+  color: #f5f5f5;
+  text-align: left;
+}
+
+th {
+  background: #333;
+  font-weight: 600;
+}
+
+tr:nth-child(even) {
+  background: #1a1a1a;
+}
+
+/* ❗ hover tylko desktop */
+@media (hover: hover) {
+  tr:hover {
+    background: #444;
+  }
+}
+
+tr:nth-child(even) {
+  background: #1a1a1a;
+}
+
+tr:hover {
+  background: #444;
+}
+
+/* ========================= Forum ========================= */
+#forum {
+  margin: 50px 0;
+  padding: 30px;
+  background: #111;
+  border-radius: 12px;
+  text-align: center;
+}
+
+#forum .social-container {
+  margin-bottom: 20px;
+}
+
+#forum a {
+  display: inline-block;
+  padding: 12px 25px;
+  border: 2px solid #fff;
+  color: #fff;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: 0.3s;
+  margin-bottom: 15px;
+}
+
+#forum a:hover {
+  background: #fff;
+  color: #000;
+}
+
+#forum .button-container {
+  margin: 20px 0;
+}
+
+#forum button {
+  padding: 12px 25px;
+  font-size: 16px;
+  border-radius: 6px;
+  border: none;
+  background: #444;
+  color: #fff;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+#forum button:hover {
+  background: #666;
+}
+
+.center-dot {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  background: #fff;
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 20px #fff;
+}
+
+.aura {
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  top: -25px;
+  left: -25px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+  animation: pulse 2s infinite alternate;
+}
+/* =========================
+   RESPONSYWNOŚĆ HEADERA
+========================= */
+
+/* TABLET + MOBILE */
+@media (max-width: 768px) {
+
+  header {
+    padding: 20px 15px;
+  }
+
+  #hero-title {
+    font-size: 34px;
+    margin-bottom: 10px;
+  }
+
+  nav ul {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  nav ul li a {
+    padding: 8px 12px;
+    font-size: 14px;
+  }
+
+  #translate-btn {
+    padding: 8px 14px;
+    font-size: 14px;
+  }
+}
+
+/* SMALL MOBILE */
+@media (max-width: 480px) {
+
+  #hero-title {
+    font-size: 26px;
+  }
+
+  header {
+    padding: 15px 10px;
+  }
+
+  nav ul {
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  nav ul li a {
+    width: 100%;
+    text-align: center;
+  }
+
+  .button-container {
+    margin-bottom: 15px;
+  }
+
+  #translate-btn {
+    width: 100%;
+    max-width: 200px;
+  }
+}

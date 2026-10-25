@@ -1,0 +1,66 @@
+{
+  "name": "elmove",
+  "version": "1.0.0",
+  "description": "Ruch Uniesienia (Elation Movement) - Electron App",
+  "main": "main/main.js",
+  "author": "Mateusz Formicki",
+  "license": "UNLICENSED",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder --win --linux --mac",
+    "build:win": "electron-builder --win",
+    "publish:win": "electron-builder --win --publish always"
+  },
+  "build": {
+    "appId": "cloud.elmove.app",
+    "productName": "Elmove - Ruch Uniesienia",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main/**/*",
+      "renderer/**/*",
+      "package.json"
+    ],
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "formmantg",
+        "repo": "elmove-repo"
+      }
+    ],
+    "win": {
+      "target": ["nsis"],
+      "icon": "renderer/app-icon.ico"
+    },
+    "linux": {
+      "target": ["AppImage", "deb"],
+      "category": "Education",
+      "icon": "renderer/app-icon.png"
+    },
+    "mac": {
+      "target": ["dmg"],
+      "category": "public.app-category.education",
+      "icon": "renderer/app-icon.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
+  },
+  "dependencies": {
+    "electron-updater": "^6.3.9",
+    "express": "^4.21.0",
+    "socket.io": "^4.8.0",
+    "multer": "^1.4.5-lts.1",
+    "uuid": "^10.0.0"
+  },
+  "devDependencies": {
+    "electron": "^33.0.0",
+    "electron-builder": "^25.0.0"
+  },
+  "overrides": {
+    "brace-expansion": "2.0.1",
+    "minimatch": "9.0.5"
+  }
+}

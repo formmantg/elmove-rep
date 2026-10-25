@@ -1,0 +1,2045 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+<script src="../elmove-app.js"></script>
+
+  <script src="https://cdn.cookiehub.eu/c2/3e94fd47.js"></script>
+<script type="text/javascript">
+document.addEventListener("DOMContentLoaded", function(event) {
+var cpm = {};
+window.cookiehub.load(cpm);
+});
+</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Elation's Hyperclock</title>
+
+  <meta name="description"
+    content="Elation's Hyperclock — dynamiczny zegar o neonowym efekcie, który symbolizuje upływający czas i inspirację.">
+
+  <meta name="keywords"
+    content="Elation, Hyperclock, zegar, neon, pulsujący zegar, inspiracja, czas, efekt świetlny, wallpaper engine">
+
+  <meta name="author" content="Mateusz Formicki">
+
+  <meta property="og:title" content="Elation's Hyperclock">
+  <meta property="og:description"
+    content="Dynamiczny zegar o neonowym efekcie — pulsujące wskazówki i światła.">
+  <meta property="og:image" content="elmovelogo.png">
+  <meta property="og:url" content="https://www.elmove.cloud/hyperclock">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Elation's Hyperclock">
+  <meta name="twitter:description"
+    content="Dynamiczny zegar o neonowym efekcie — pulsujące wskazówki i światła.">
+  <meta name="twitter:image" content="summary.png">
+
+  <style>
+
+    :root {
+      --second-silver-glow: 0;
+      --logo-speed: 9s;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+
+      width: 100dvw;
+      height: 100dvh;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      overflow: hidden;
+
+      background:
+        url('/images/tlo.jpg')
+        no-repeat center / cover;
+
+      position: relative;
+    }
+
+    body::before {
+      content: "";
+
+      position: absolute;
+      inset: 0;
+
+      background: rgba(0, 0, 0, 0.9);
+
+      z-index: 0;
+    }
+
+    #clock-wrapper {
+      width: 90vmin;
+      height: 90vmin;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      perspective: 900px;
+      perspective-origin: center;
+
+      transform-style: preserve-3d;
+    }
+
+    #clock-container {
+      position: relative;
+
+      width: 100%;
+      height: 100%;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      transform-style: preserve-3d;
+    }
+
+    svg {
+      width: 100%;
+      height: 100%;
+
+      display: block;
+
+      overflow: visible;
+
+      transform: scale(-1, -1);
+    }
+
+    #hour-hand-group,
+    #minute-hand-group,
+    #second-hand-group {
+      transition: none;
+      opacity: 0;
+    }
+
+    #clock-container.loaded #hour-hand-group,
+    #clock-container.loaded #minute-hand-group,
+    #clock-container.loaded #second-hand-group {
+      opacity: 1;
+    }
+
+
+    /* =====================================================
+       LOGO
+       ===================================================== */
+
+    #center-logo {
+      position: absolute;
+
+      top: 50%;
+      left: 50%;
+
+      transform:
+        translate(-50%, -50%)
+        rotate(0deg)
+        rotateX(0deg)
+        rotateY(0deg);
+
+      transform-origin: center center;
+      transform-style: preserve-3d;
+
+      width: 12vmin;
+      height: 18vmin;
+
+      max-width: 72px;
+      max-height: 110px;
+
+      object-fit: contain;
+
+      z-index: 9999;
+
+      animation:
+        hologramSpin
+        var(--logo-speed)
+        linear
+        infinite;
+
+      /* czarny symbol → jasny neonowy */
+      filter:
+        invert(1)
+        drop-shadow(0 0 8px cyan)
+        drop-shadow(0 0 20px #00ffff)
+        drop-shadow(0 0 40px #0088ff);
+
+      opacity: 0.95;
+
+      backface-visibility: visible;
+      cursor: pointer;
+    }
+
+
+    @keyframes hologramSpin {
+
+      0% {
+        transform:
+          translate(-50%, -50%)
+          rotate(0deg)
+          rotateX(0deg)
+          rotateY(0deg);
+      }
+
+      25% {
+        transform:
+          translate(-50%, -50%)
+          rotate(90deg)
+          rotateX(12deg)
+          rotateY(25deg);
+      }
+
+      50% {
+        transform:
+          translate(-50%, -50%)
+          rotate(180deg)
+          rotateX(0deg)
+          rotateY(50deg);
+      }
+
+      75% {
+        transform:
+          translate(-50%, -50%)
+          rotate(270deg)
+          rotateX(-12deg)
+          rotateY(25deg);
+      }
+
+      100% {
+        transform:
+          translate(-50%, -50%)
+          rotate(360deg)
+          rotateX(0deg)
+          rotateY(0deg);
+      }
+
+    }
+
+
+    #logo-link {
+      position: absolute;
+
+      top: 50%;
+      left: 50%;
+
+      transform:
+        translate(-50%, -50%);
+
+      width: 14vmin;
+      height: 14vmin;
+
+      z-index: 9999;
+
+      cursor: pointer;
+    }
+
+
+    /* =====================================================
+       PULSE
+       ===================================================== */
+
+    .pulse {
+      animation:
+        pulse
+        9s
+        ease-in-out
+        infinite;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+
+      50% {
+        transform: scale(1);
+        opacity: 0.75;
+      }
+
+    }
+
+
+    .pulse-grid {
+      animation:
+        pulseGrid
+        2.8s
+        ease-in-out
+        infinite;
+    }
+
+    @keyframes pulseGrid {
+
+      0%,
+      100% {
+        opacity: 0.9;
+        transform: scale(1);
+      }
+
+      50% {
+        opacity: 0.6;
+        transform: scale(1.4);
+      }
+
+    }
+
+
+    /* =====================================================
+       WSKAZÓWKI
+       ===================================================== */
+
+    .hand-glow {
+      filter:
+        drop-shadow(
+          0 0 6px currentColor
+        )
+        drop-shadow(
+          0 0 12px currentColor
+        )
+        drop-shadow(
+          0 0 calc(
+            6px +
+            20px *
+            var(--second-silver-glow)
+          )
+          white
+        )
+        drop-shadow(
+          0 0 calc(
+            10px +
+            30px *
+            var(--second-silver-glow)
+          )
+          hsl(
+            200 40% 90% /
+            calc(
+              0.4 +
+              0.6 *
+              var(--second-silver-glow)
+            )
+          )
+        );
+    }
+
+    .hand-glow.flash {
+      filter:
+        drop-shadow(
+          0 0 6px currentColor
+        )
+        drop-shadow(
+          0 0 12px currentColor
+        )
+        drop-shadow(
+          0 0 40px white
+        )
+        drop-shadow(
+          0 0 70px
+          hsl(200 60% 95%)
+        ) !important;
+
+      transition: none;
+    }
+
+    .pulse-hand {
+      animation:
+        pulseHand
+        1.2s
+        ease-in-out
+        infinite
+        alternate;
+    }
+
+    @keyframes pulseHand {
+
+      0% {
+        filter: brightness(1);
+      }
+
+      100% {
+        filter: brightness(1.4);
+      }
+
+    }
+
+    #second-hand-group {
+      transition: none;
+    }
+
+    #center-flash {
+      transform-box: fill-box;
+      transform-origin: center;
+    }
+
+
+  </style>
+
+</head>
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-2WYNZ1FP4B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-2WYNZ1FP4B');
+</script>
+
+<body>
+
+  <div id="clock-wrapper">
+
+    <div id="clock-container">
+
+      <svg
+        id="animated-clock"
+        viewBox="-200 -200 400 400"
+        preserveAspectRatio="xMidYMid meet">
+
+        <defs>
+
+
+          <!-- =================================================
+               FLASH
+               ================================================= -->
+
+          <filter id="flash-glow">
+
+            <feGaussianBlur
+              stdDeviation="12"
+              result="blur" />
+
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+
+          </filter>
+
+
+          <!-- =================================================
+               NEON
+               ================================================= -->
+
+          <filter id="neon-glow">
+
+            <feGaussianBlur
+              stdDeviation="2.5"
+              result="blur" />
+
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+
+          </filter>
+
+
+          <!-- =================================================
+               SHADOW
+               ================================================= -->
+
+          <filter id="shadow-glow">
+
+            <feGaussianBlur
+              in="SourceAlpha"
+              stdDeviation="3"
+              result="blur" />
+
+            <feComponentTransfer>
+
+              <feFuncA
+                type="linear"
+                slope="0.5" />
+
+            </feComponentTransfer>
+
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+
+          </filter>
+
+
+          <!-- =================================================
+               WELD
+               ================================================= -->
+
+          <filter
+            id="weld-glow"
+            x="-100%"
+            y="-100%"
+            width="300%"
+            height="300%">
+
+            <feGaussianBlur
+              stdDeviation="6"
+              result="blur" />
+
+            <feTurbulence
+              type="fractalNoise"
+              baseFrequency="0.06"
+              numOctaves="2"
+              result="noise" />
+
+            <feDisplacementMap
+              in="blur"
+              in2="noise"
+              scale="9"
+              xChannelSelector="R"
+              yChannelSelector="G" />
+
+            <feComponentTransfer>
+
+              <feFuncR
+                type="linear"
+                slope="1.4"
+                intercept="0.08" />
+
+              <feFuncG
+                type="linear"
+                slope="1.4"
+                intercept="0.08" />
+
+              <feFuncB
+                type="linear"
+                slope="1.4"
+                intercept="0.08" />
+
+            </feComponentTransfer>
+
+            <feMerge>
+              <feMergeNode />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+
+          </filter>
+
+
+          <!-- =================================================
+               GLASS
+               ================================================= -->
+
+          <radialGradient id="glassGradient">
+
+            <stop
+              offset="0%"
+              stop-color="white"
+              stop-opacity="0.09" />
+
+            <stop
+              offset="70%"
+              stop-color="white"
+              stop-opacity="0.03" />
+
+            <stop
+              offset="100%"
+              stop-color="white"
+              stop-opacity="0.16" />
+
+          </radialGradient>
+
+
+          <filter id="glass-blur">
+            <feGaussianBlur
+              stdDeviation="1.8" />
+          </filter>
+
+
+          <circle
+            id="flash-light"
+            cx="0"
+            cy="0"
+            r="50"
+            fill="yellow"
+            opacity="0"
+            filter="url(#flash-glow)" />
+
+        </defs>
+
+
+        <!-- ===================================================
+             GLASS
+             =================================================== -->
+
+        <g
+          id="glass-layer"
+          filter="url(#glass-blur)">
+
+          <circle
+            cx="0"
+            cy="0"
+            r="180"
+            fill="white"
+            opacity="0.025" />
+
+          <ellipse
+            cx="0"
+            cy="-100"
+            rx="55"
+            ry="12"
+            fill="white"
+            opacity="0.04" />
+
+          <ellipse
+            cx="0"
+            cy="-50"
+            rx="125"
+            ry="42"
+            fill="white"
+            opacity="0.06"
+            id="glass-reflection" />
+
+          <ellipse
+            cx="55"
+            cy="45"
+            rx="105"
+            ry="35"
+            fill="white"
+            opacity="0.04"
+            id="glass-reflection-2" />
+
+        </g>
+
+
+        <!-- ===================================================
+             CLOCK FACE
+             =================================================== -->
+
+        <g id="clock-face">
+
+          <g id="start-points"></g>
+
+          <g
+            id="grid-lines"
+            class="pulse-grid">
+          </g>
+
+          <g id="hour-points"></g>
+
+          <g id="minute-points"></g>
+
+          <g id="second-points"></g>
+
+        </g>
+
+
+        <!-- SECOND TRAIL -->
+
+        <g id="second-trail"></g>
+
+
+        <!-- BACK ORBIT -->
+
+        <g id="logo-orbit-back"></g>
+
+
+        <!-- ===================================================
+             HOUR HAND
+             =================================================== -->
+
+        <g
+          id="hour-hand-group"
+          class="pulse-hand">
+
+          <line
+            id="hour-hand"
+            x1="0"
+            y1="0"
+            x2="0"
+            y2="120"
+            stroke="#00ff00"
+            stroke-width="8"
+            stroke-linecap="round"
+            class="hand-glow" />
+
+        </g>
+
+
+        <!-- ===================================================
+             MINUTE HAND
+             =================================================== -->
+
+        <g
+          id="minute-hand-group"
+          class="pulse-hand">
+
+          <line
+            id="minute-hand"
+            x1="0"
+            y1="0"
+            x2="0"
+            y2="140"
+            stroke="#ff00ff"
+            stroke-width="6"
+            stroke-linecap="round"
+            class="hand-glow" />
+
+        </g>
+
+
+        <!-- ===================================================
+             SECOND HAND
+             =================================================== -->
+
+        <g
+          id="second-hand-group"
+          class="pulse-hand">
+
+          <line
+            id="second-hand"
+            x1="0"
+            y1="0"
+            x2="0"
+            y2="150"
+            stroke="#00ffff"
+            stroke-width="3"
+            stroke-linecap="round"
+            class="hand-glow" />
+
+        </g>
+
+
+        <!-- LOGO ORBIT -->
+
+        <g id="logo-orbit"></g>
+
+
+        <!-- CENTER FLASH -->
+
+        <circle
+          id="center-flash"
+          cx="0"
+          cy="0"
+          r="10"
+          fill="white"
+          opacity="0" />
+
+      </svg>
+
+
+      <!-- =====================================================
+           CENTER LOGO
+           ===================================================== -->
+
+      <a
+        href="/index.html"
+        id="logo-link"
+        title="Strona główna">
+
+        <img
+          id="center-logo"
+          src="/images/hyperclock-symbol.png"
+          alt="EM – symbol Hiperzegara">
+
+      </a>
+
+    </div>
+
+  </div>
+
+
+  <script>
+
+
+    // =========================================================
+    // KONFIGURACJA
+    // =========================================================
+
+    const TRAIL_LENGTH = 25;
+    const SYNC_INTERVAL = 60000;
+
+
+    // =========================================================
+    // DOM
+    // =========================================================
+
+    const els = {
+
+      hourHand:
+        document.getElementById(
+          'hour-hand'
+        ),
+
+      minuteHand:
+        document.getElementById(
+          'minute-hand'
+        ),
+
+      secondHand:
+        document.getElementById(
+          'second-hand'
+        ),
+
+      flashLight:
+        document.getElementById(
+          'flash-light'
+        ),
+
+      startPoints:
+        document.getElementById(
+          'start-points'
+        ),
+
+      gridLines:
+        document.getElementById(
+          'grid-lines'
+        ),
+
+      hourGroup:
+        document.getElementById(
+          'hour-points'
+        ),
+
+      minuteGroup:
+        document.getElementById(
+          'minute-points'
+        ),
+
+      secondGroup:
+        document.getElementById(
+          'second-points'
+        )
+
+    };
+
+
+    // =========================================================
+    // STAŁE KĄTY
+    // =========================================================
+
+    const angles = {
+
+      hours: [
+
+        0,
+        30,
+        60,
+        90,
+        120,
+        150,
+        180,
+        210,
+        240,
+        270,
+        300,
+        330
+
+      ],
+
+
+      minutes: [
+
+        6.65,
+        7.09,
+        7.56,
+        8.06,
+        8.59,
+        9.15,
+        9.75,
+        10.39,
+        11.07,
+        11.80,
+        12.57,
+        13.39,
+        14.27,
+        15.20,
+        16.19,
+        17.25,
+        18.38,
+        19.58,
+        20.87,
+        22.24,
+        23.70,
+        25.26,
+        26.92,
+        28.69,
+        30.58,
+        32.60,
+        34.75,
+        37.04,
+        39.48,
+        42.09,
+        44.88,
+        47.85,
+        51.03,
+        54.42,
+        58.05,
+        61.92,
+        66.05,
+        70.46,
+        75.16,
+        80.18,
+        85.54,
+        91.26,
+        97.36,
+        103.87,
+        110.82,
+        118.24,
+        126.15,
+        134.60,
+        143.61,
+        153.22,
+        163.47,
+        174.40,
+        186.05,
+        198.47,
+        211.70,
+        225.80,
+        240.82,
+        256.82,
+        273.85,
+        366.65
+
+      ],
+
+
+      seconds: [
+
+        1.32,
+        1.43,
+        1.55,
+        1.69,
+        1.83,
+        1.99,
+        2.16,
+        2.35,
+        2.55,
+        2.77,
+        3.00,
+        3.26,
+        3.54,
+        3.84,
+        4.17,
+        4.53,
+        4.91,
+        5.33,
+        5.79,
+        6.29,
+        6.83,
+        7.41,
+        8.04,
+        8.73,
+        9.48,
+        10.29,
+        11.17,
+        12.13,
+        13.17,
+        14.29,
+        15.51,
+        16.84,
+        18.28,
+        19.85,
+        21.55,
+        23.40,
+        25.40,
+        27.57,
+        29.94,
+        32.51,
+        35.30,
+        38.33,
+        41.62,
+        45.19,
+        49.05,
+        53.24,
+        57.78,
+        62.71,
+        68.05,
+        73.84,
+        80.10,
+        86.87,
+        94.18,
+        102.18,
+        110.82,
+        120.15,
+        130.22,
+        141.08,
+        152.80,
+        165.44,
+        361.32
+
+      ]
+
+    };
+
+
+    // =========================================================
+    // KĄTY
+    // =========================================================
+
+    /*
+     * UWAGA:
+     *
+     * Tutaj NIE NORMALIZUJEMY kąta do 0–360.
+     *
+     * 361.32 pozostaje 361.32.
+     *
+     * Po zakończeniu tablicy zaczynamy kolejny cykl
+     * +360 stopni.
+     */
+
+    function getHyperAngle(
+      index,
+      type
+    ) {
+
+      const array =
+        angles[type];
+
+      if (
+        !array ||
+        array.length === 0
+      ) {
+        return 0;
+      }
+
+      const length =
+        array.length;
+
+      const cycle =
+        Math.floor(
+          index / length
+        );
+
+      const position =
+        index % length;
+
+      return (
+        array[position] +
+        cycle * 360
+      );
+
+    }
+
+
+    // =========================================================
+    // SVG
+    // =========================================================
+
+    function angleToCartesian(
+      angle,
+      radius
+    ) {
+
+      const rad =
+        (angle + 90) *
+        Math.PI /
+        180;
+
+      return {
+
+        x:
+          radius *
+          Math.cos(rad),
+
+        y:
+          radius *
+          Math.sin(rad)
+
+      };
+
+    }
+
+
+    function createCircle(
+      x,
+      y,
+      radius,
+      fill,
+      cls,
+      parent
+    ) {
+
+      const circle =
+        document.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "circle"
+        );
+
+      circle.setAttribute(
+        "cx",
+        x
+      );
+
+      circle.setAttribute(
+        "cy",
+        y
+      );
+
+      circle.setAttribute(
+        "r",
+        radius
+      );
+
+      circle.setAttribute(
+        "fill",
+        fill
+      );
+
+      if (cls) {
+        circle.classList.add(cls);
+      }
+
+      if (parent) {
+        parent.appendChild(
+          circle
+        );
+      }
+
+      return circle;
+
+    }
+
+
+    function createLine(
+      x1,
+      y1,
+      x2,
+      y2,
+      stroke,
+      width,
+      opacity,
+      parent
+    ) {
+
+      const line =
+        document.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "line"
+        );
+
+      line.setAttribute(
+        "x1",
+        x1
+      );
+
+      line.setAttribute(
+        "y1",
+        y1
+      );
+
+      line.setAttribute(
+        "x2",
+        x2
+      );
+
+      line.setAttribute(
+        "y2",
+        y2
+      );
+
+      line.setAttribute(
+        "stroke",
+        stroke
+      );
+
+      line.setAttribute(
+        "stroke-width",
+        width
+      );
+
+      line.setAttribute(
+        "stroke-opacity",
+        opacity
+      );
+
+      parent?.appendChild(
+        line
+      );
+
+      return line;
+
+    }
+
+
+    // =========================================================
+    // PUNKTY
+    // =========================================================
+
+    function createHyperPoints() {
+
+      const minuteRadius = 100;
+      const secondRadius = 105;
+      const hourRadius = 115;
+
+
+      // MINUTY
+
+      for (
+        let i = 0;
+        i < 60;
+        i++
+      ) {
+
+        const angle =
+          getHyperAngle(
+            i,
+            "minutes"
+          );
+
+        const point =
+          angleToCartesian(
+            angle,
+            minuteRadius
+          );
+
+        createCircle(
+          point.x,
+          point.y,
+          3,
+          "red",
+          "pulse",
+          els.minuteGroup
+        );
+
+      }
+
+
+      // SEKUNDY
+
+      for (
+        let i = 0;
+        i < 60;
+        i++
+      ) {
+
+        const angle =
+          getHyperAngle(
+            i,
+            "seconds"
+          );
+
+        const point =
+          angleToCartesian(
+            angle,
+            secondRadius
+          );
+
+        createCircle(
+          point.x,
+          point.y,
+          2,
+          "cyan",
+          "pulse",
+          els.secondGroup
+        );
+
+      }
+
+
+      // GODZINY
+
+      for (
+        let i = 0;
+        i < 12;
+        i++
+      ) {
+
+        const angle =
+          angles.hours[i];
+
+        const point =
+          angleToCartesian(
+            angle,
+            hourRadius
+          );
+
+        createCircle(
+          point.x,
+          point.y,
+          4,
+          "lime",
+          "pulse",
+          els.hourGroup
+        );
+
+      }
+
+    }
+
+
+    // =========================================================
+    // GRID
+    // =========================================================
+
+    function createGridLines() {
+
+      const minuteRadius = 150;
+      const secondRadius = 155;
+
+
+      for (
+        let i = 0;
+        i < 60;
+        i++
+      ) {
+
+        const angle =
+          getHyperAngle(
+            i,
+            "minutes"
+          );
+
+        const point =
+          angleToCartesian(
+            angle,
+            minuteRadius
+          );
+
+        createLine(
+          0,
+          0,
+          point.x,
+          point.y,
+          "red",
+          1,
+          0.7,
+          els.gridLines
+        );
+
+      }
+
+
+      for (
+        let i = 0;
+        i < 60;
+        i++
+      ) {
+
+        const angle =
+          getHyperAngle(
+            i,
+            "seconds"
+          );
+
+        const point =
+          angleToCartesian(
+            angle,
+            secondRadius
+          );
+
+        createLine(
+          0,
+          0,
+          point.x,
+          point.y,
+          "blue",
+          1,
+          0.5,
+          els.gridLines
+        );
+
+      }
+
+    }
+
+
+    createHyperPoints();
+    createGridLines();
+
+
+    // =========================================================
+    // CZAS — SEKUNDA
+    // =========================================================
+
+    /*
+     * To jest najważniejsza część.
+     *
+     * Nie używamy tutaj lerp 0.15.
+     *
+     * Pozycja jest liczona bezpośrednio z aktualnego
+     * czasu systemowego.
+     *
+     * Każda sekunda ma dokładnie 1000 ms.
+     */
+
+    function getSecondAngle(now) {
+
+      const seconds =
+        now.getSeconds();
+
+      const milliseconds =
+        now.getMilliseconds();
+
+      const fraction =
+        milliseconds / 1000;
+
+
+      const current =
+        getHyperAngle(
+          seconds,
+          "seconds"
+        );
+
+
+      const next =
+        getHyperAngle(
+          seconds + 1,
+          "seconds"
+        );
+
+
+      return (
+        current +
+        (
+          next -
+          current
+        ) *
+        fraction
+      );
+
+    }
+
+
+    // =========================================================
+    // CZAS — MINUTA
+    // =========================================================
+
+    /*
+     * Minuta również porusza się płynnie przez całe 60 sekund.
+     */
+
+    function getMinuteAngle(now) {
+
+      const minutes =
+        now.getMinutes();
+
+      const seconds =
+        now.getSeconds();
+
+      const milliseconds =
+        now.getMilliseconds();
+
+
+      const fraction =
+        (
+          seconds +
+          milliseconds / 1000
+        ) / 60;
+
+
+      const current =
+        getHyperAngle(
+          minutes,
+          "minutes"
+        );
+
+
+      const next =
+        getHyperAngle(
+          minutes + 1,
+          "minutes"
+        );
+
+
+      return (
+        current +
+        (
+          next -
+          current
+        ) *
+        fraction
+      );
+
+    }
+
+
+    // =========================================================
+    // CZAS — GODZINA
+    // =========================================================
+
+    function getHourAngle(now) {
+
+      const hours =
+        now.getHours();
+
+      const minutes =
+        now.getMinutes();
+
+      const seconds =
+        now.getSeconds();
+
+
+      return (
+        (
+          hours +
+          minutes / 60 +
+          seconds / 3600
+        ) *
+        30
+      );
+
+    }
+
+
+    // =========================================================
+    // AKTUALIZACJA ZEGARA
+    // =========================================================
+
+    function updateClock() {
+
+      const now =
+        new Date();
+
+
+      const hourAngle =
+        getHourAngle(
+          now
+        );
+
+
+      const minuteAngle =
+        getMinuteAngle(
+          now
+        );
+
+
+      const secondAngle =
+        getSecondAngle(
+          now
+        );
+
+
+      els.hourHand
+        .parentNode
+        .setAttribute(
+          "transform",
+          `rotate(${hourAngle} 0 0)`
+        );
+
+
+      els.minuteHand
+        .parentNode
+        .setAttribute(
+          "transform",
+          `rotate(${minuteAngle} 0 0)`
+        );
+
+
+      els.secondHand
+        .parentNode
+        .setAttribute(
+          "transform",
+          `rotate(${secondAngle} 0 0)`
+        );
+
+    }
+
+
+    // =========================================================
+    // ORBITA LOGO
+    // =========================================================
+
+    const logoOrbitGroup =
+      document.getElementById(
+        "logo-orbit"
+      );
+
+
+    const orb =
+      document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "circle"
+      );
+
+
+    orb.setAttribute(
+      "r",
+      6
+    );
+
+    orb.setAttribute(
+      "fill",
+      "#ff0"
+    );
+
+    orb.setAttribute(
+      "opacity",
+      0.6
+    );
+
+    orb.setAttribute(
+      "filter",
+      "url(#shadow-glow)"
+    );
+
+
+    logoOrbitGroup.appendChild(
+      orb
+    );
+
+
+    const orbitRadius = 80;
+    const baseSpeed = 0.55;
+
+
+    // =========================================================
+    // PARTICLES
+    // =========================================================
+
+    const particles = [];
+
+
+    class Particle {
+
+      constructor(
+        x,
+        y,
+        color
+      ) {
+
+        this.x = x;
+        this.y = y;
+        this.color = color;
+
+        this.r =
+          Math.random() * 2.5 + 1;
+
+        this.vx =
+          (
+            Math.random() - 0.5
+          ) * 1.8;
+
+        this.vy =
+          (
+            Math.random() - 0.5
+          ) * 1.8;
+
+        this.life =
+          Math.random() * 30 + 25;
+
+        this.opacity = 0.6;
+
+        this.el =
+          createCircle(
+            x,
+            y,
+            this.r,
+            color,
+            null,
+            els.startPoints
+          );
+
+        this.el?.setAttribute(
+          "filter",
+          "url(#weld-glow)"
+        );
+
+      }
+
+
+      update() {
+
+        if (!this.el) {
+          return false;
+        }
+
+
+        const dx =
+          -this.x;
+
+        const dy =
+          -this.y;
+
+
+        const distance =
+          Math.hypot(
+            dx,
+            dy
+          ) || 1;
+
+
+        this.vx +=
+          (dx / distance) *
+          0.08;
+
+        this.vy +=
+          (dy / distance) *
+          0.08;
+
+
+        this.x +=
+          this.vx;
+
+        this.y +=
+          this.vy;
+
+
+        this.life--;
+
+        this.opacity *= 0.985;
+
+
+        this.el.setAttribute(
+          "cx",
+          this.x
+        );
+
+        this.el.setAttribute(
+          "cy",
+          this.y
+        );
+
+        this.el.setAttribute(
+          "fill-opacity",
+          this.opacity
+        );
+
+
+        return (
+          this.life > 0 &&
+          this.opacity > 0.02
+        );
+
+      }
+
+
+      remove() {
+
+        this.el?.remove();
+
+      }
+
+    }
+
+
+    function spawnParticles() {
+
+      /*
+       * Pozostawione jako system gotowy
+       * do użycia, ale bez sztucznych
+       * punktów startowych.
+       */
+
+      if (
+        particles.length > 100
+      ) {
+        return;
+      }
+
+    }
+
+
+    function updateParticles() {
+
+      for (
+        let i = particles.length - 1;
+        i >= 0;
+        i--
+      ) {
+
+        if (
+          !particles[i].update()
+        ) {
+
+          particles[i].remove();
+
+          particles.splice(
+            i,
+            1
+          );
+
+        }
+
+      }
+
+    }
+
+
+    // =========================================================
+    // GŁÓWNA PĘTLA
+    // =========================================================
+
+    let firstFrame = true;
+
+
+    function tick() {
+
+      const t =
+        performance.now() /
+        1000;
+
+
+      // -------------------------------------------------------
+      // ORBITA
+      // -------------------------------------------------------
+
+      const pulse =
+        1 +
+        Math.sin(
+          t * 3.5
+        ) * 0.18;
+
+
+      const effectiveSpeed =
+        baseSpeed *
+        pulse;
+
+
+      const orbX =
+        orbitRadius *
+        Math.cos(
+          t *
+          effectiveSpeed
+        );
+
+
+      const orbY =
+        orbitRadius *
+        Math.sin(
+          t *
+          effectiveSpeed
+        );
+
+
+      orb.setAttribute(
+        "cx",
+        orbX
+      );
+
+      orb.setAttribute(
+        "cy",
+        orbY
+      );
+
+
+      // -------------------------------------------------------
+      // ZEGAR
+      // -------------------------------------------------------
+
+      updateClock();
+
+
+      // -------------------------------------------------------
+      // PARTICLES
+      // -------------------------------------------------------
+
+      spawnParticles();
+      updateParticles();
+
+
+      // -------------------------------------------------------
+      // LOADED
+      // -------------------------------------------------------
+
+      if (firstFrame) {
+
+        document
+          .getElementById(
+            "clock-container"
+          )
+          .classList.add(
+            "loaded"
+          );
+
+        firstFrame = false;
+
+      }
+
+
+      requestAnimationFrame(
+        tick
+      );
+
+    }
+
+
+    requestAnimationFrame(
+      tick
+    );
+
+
+    // =========================================================
+    // SOCKET.IO – impulsy do wszystkich użytkowników
+    // =========================================================
+
+    const script = document.createElement('script');
+    script.src = '/socket.io/socket.io.js';
+    document.head.appendChild(script);
+
+    let socket = null;
+
+    script.onload = () => {
+      socket = io();
+      socket.on('connect', () => {
+        console.log('Hyperclock connected');
+        // Po otwarciu zakładki – wyślij impuls do wszystkich
+        socket.emit('hyperclock:open');
+      });
+      socket.on('hyperclock:impulse', () => {
+        triggerSparkFlash();
+      });
+      socket.on('hyperclock:pulse', () => {
+        triggerSparkFlash();
+      });
+    };
+
+    function sendPulse() {
+      if (socket && socket.connected) {
+        socket.emit('hyperclock:pulse', { type: 'pulse' });
+      }
+      triggerSparkFlash();
+    }
+
+    // Kliknięcie w centrum zegara → strona główna (bez nowej karty)
+    document.addEventListener('DOMContentLoaded', () => {
+      const centerLogo = document.getElementById('center-logo');
+      const clockContainer = document.getElementById('clock-container');
+      const clickTarget = centerLogo || clockContainer;
+      if (clickTarget) {
+        clickTarget.style.cursor = 'pointer';
+        clickTarget.addEventListener('click', (e) => {
+          // tylko środek – unikamy kliknięć na wskazówki jeśli tożsamość elementu pozwala
+          const rect = clickTarget.getBoundingClientRect();
+          const cx = rect.left + rect.width / 2;
+          const cy = rect.top + rect.height / 2;
+          const dist = Math.hypot(e.clientX - cx, e.clientY - cy);
+          if (dist < Math.min(rect.width, rect.height) * 0.25) {
+            window.location.href = '/index.html';
+          }
+        });
+      }
+    });
+
+
+    // =========================================================
+    // FLASH
+    // =========================================================
+
+    let flashActive = false;
+
+
+    function triggerSparkFlash() {
+
+      if (flashActive) {
+        return;
+      }
+
+
+      flashActive = true;
+
+
+      const centerFlash =
+        document.getElementById(
+          "center-flash"
+        );
+
+
+      if (centerFlash) {
+
+        centerFlash.setAttribute(
+          "opacity",
+          "1"
+        );
+
+
+        centerFlash.animate(
+
+          [
+
+            {
+              opacity: 0,
+              transform:
+                "scale(0)"
+            },
+
+            {
+              opacity: 1,
+              transform:
+                "scale(1)"
+            },
+
+            {
+              opacity: 0,
+              transform:
+                "scale(6)"
+            }
+
+          ],
+
+          {
+
+            duration: 650,
+
+            easing:
+              "ease-out",
+
+            fill:
+              "forwards"
+
+          }
+
+        );
+
+
+        setTimeout(
+          () => {
+
+            centerFlash.setAttribute(
+              "opacity",
+              "0"
+            );
+
+          },
+          650
+        );
+
+      }
+
+
+      setTimeout(
+        () => {
+
+          flashActive =
+            false;
+
+        },
+        650
+      );
+
+    }
+
+
+    // =========================================================
+    // WEBSOCKET KEEP-ALIVE
+    // =========================================================
+
+    setInterval(
+      () => {
+
+        if (
+          ws.readyState === 1
+        ) {
+
+          ws.send(
+            JSON.stringify({
+              type: "ping"
+            })
+          );
+
+        }
+
+      },
+      25000
+    );
+
+
+  </script>
+
+</body>
+
+</html>

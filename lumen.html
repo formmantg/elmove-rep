@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+<script src="../elmove-app.js"></script>
+
+  <script src="https://cdn.cookiehub.eu/c2/3e94fd47.js"></script>
+<script type="text/javascript">
+document.addEventListener("DOMContentLoaded", function(event) {
+var cpm = {};
+window.cookiehub.load(cpm);
+});
+</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Elation Movement – Lumen</title>
+  <!-- Metatagi SEO -->
+  <meta name="description"
+    content="Lumen - miejsce, które łączy ludzi poprzez światło inspiracji, nadziei i organizacji. Odkryj cele, które budują lepszą przyszłość.">
+  <meta name="keywords"
+    content="Lumen, inspiracja, nadzieja, organizacja, Elation Movement, światło, cele, wspólnota, ludzie">
+  <meta name="author" content="Mateusz Formicki">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Elation Movement – Lumen">
+  <meta property="og:description"
+    content="Lumen to przestrzeń, która niesie światło nadziei i inspiracji, budując organizacje i cele, które zmieniają świat na lepsze.">
+  <meta property="og:image" content="lumen-og-image.jpg">
+  <meta property="og:url" content="https://www.elmove.cloud/lumen">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Elation Movement – Lumen">
+  <meta name="twitter:description"
+    content="Lumen to przestrzeń, która niesie światło nadziei i inspiracji, budując organizacje i cele, które zmieniają świat na lepsze.">
+  <meta name="twitter:image" content="lumen-twitter-image.jpg">
+
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-2WYNZ1FP4B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-2WYNZ1FP4B');
+</script>
+
+<body>
+
+  <header>
+    <h1>Lumen</h1>
+    <p>O ludziach z ludźmi i wyłącznie dla nich</p>
+    <p><i>~ Zipera</i></p>
+  </header>
+
+  <a href="/index.html" class="home-bar" id="home-bar-link">
+    <span>H</span>
+    <span>O</span>
+    <span>M</span>
+    <span>E</span>
+  </a>
+
+  <div id="main-container">
+
+    <aside>
+      <div class="search-box">
+        <input type="text" placeholder="🔍 Szukaj osoby lub zespołu...">
+      </div>
+      <nav>
+        <ul id="sidebar-list">
+          <!-- Elementy wstawiane przez JS -->
+        </ul>
+      </nav>
+    </aside>
+<div id="google_translate_element" style="display:none;"></div>
+    <main>
+      <div class="news-container">
+        <div class="news-list" id="news-list">
+          <!-- Newsy wstawiane przez news.js -->
+        </div>
+        <h2>Aktualności</h2>
+      </div>
+    </main>
+
+  </div>
+
+  <!-- Scripts -->
+  <script src="data.js"></script>
+  <script src="news.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const sidebar = document.getElementById("sidebar-list");
+
+      // Tworzenie sekcji sidebaru
+      function createSection(title, items, defaultLimit = 3) {
+        const li = document.createElement("li");
+        const btn = document.createElement("button");
+        btn.className = "accordion";
+        btn.textContent = title;
+
+        const ul = document.createElement("ul");
+        ul.className = "submenu";
+
+        items.slice(-defaultLimit).reverse().forEach(item => {
+          const itemLi = document.createElement("li");
+          const a = document.createElement("a");
+          a.href = item.link;
+          a.className = "sidebar-item";
+
+          const span = document.createElement("span");
+          span.textContent = item.name;
+
+          const img = document.createElement("img");
+          img.src = item.photo;
+          img.alt = item.name;
+          img.className = "sidebar-img";
+
+          a.appendChild(span);
+          a.appendChild(img);
+          itemLi.appendChild(a);
+          ul.appendChild(itemLi);
+        });
+
+        li.appendChild(btn);
+        li.appendChild(ul);
+        sidebar.appendChild(li);
+
+        return { btn, ul, items, defaultLimit };
+      }
+
+      const sections = [
+        createSection("Ludzie", people, 3),
+        createSection("Zespoły", teams, 2),
+        createSection("Organizacje", organizations, 2)
+      ];
+
+      // Akordeon
+      sections.forEach(section => {
+        section.btn.addEventListener("click", function () {
+          this.classList.toggle("active");
+          const submenu = section.ul;
+          if (submenu.style.maxHeight) {
+            submenu.style.maxHeight = null;
+          } else {
+            submenu.style.maxHeight = submenu.scrollHeight + "px";
+          }
+        });
+      });
+
+      // Translate button pod żaluzją
+      const translateLi = document.createElement("li");
+      const translateBtn = document.createElement("button");
+      translateBtn.id = "translate-btn";
+      translateBtn.textContent = "EN";
+      translateLi.appendChild(translateBtn);
+      sidebar.appendChild(translateLi);
+
+      let currentLang = "pl";
+      translateBtn.addEventListener("click", function () {
+        const select = document.querySelector(".goog-te-combo");
+        if (!select) return;
+
+        if (currentLang === "pl") {
+          select.value = "en";
+          translateBtn.textContent = "PL";
+          currentLang = "en";
+        } else {
+          select.value = "pl";
+          translateBtn.textContent = "EN";
+          currentLang = "pl";
+        }
+        select.dispatchEvent(new Event("change"));
+      });
+
+      // Live search
+      const searchInput = document.querySelector(".search-box input");
+      searchInput.addEventListener("keyup", function () {
+        const filter = searchInput.value.toLowerCase();
+
+        sections.forEach(section => {
+          const ul = section.ul;
+
+          const filtered = section.items
+            .filter(item => item.name.toLowerCase().includes(filter))
+            .slice(-section.defaultLimit)
+            .reverse();
+
+          ul.innerHTML = "";
+          filtered.forEach(item => {
+            const li = document.createElement("li");
+            const a = document.createElement("a");
+            a.href = item.link;
+            a.className = "sidebar-item";
+
+            const img = document.createElement("img");
+            img.src = item.photo;
+            img.alt = item.name;
+            img.className = "sidebar-img";
+            img.onerror = function() { this.src = '/images/elmovelogo.png'; };
+
+            const span = document.createElement("span");
+            span.textContent = item.name;
+
+            a.appendChild(img);
+            a.appendChild(span);
+            li.appendChild(a);
+            ul.appendChild(li);
+          });
+
+          if (filtered.length > 0) {
+            section.btn.classList.add("active");
+            ul.style.maxHeight = ul.scrollHeight + "px";
+          } else {
+            section.btn.classList.remove("active");
+            ul.style.maxHeight = null;
+          }
+        });
+      });
+
+      // ===== Przycisk + do dodawania siebie / zespołu / organizacji =====
+      const addLi = document.createElement("li");
+      addLi.style.marginTop = "16px";
+      const addBtn = document.createElement("button");
+      addBtn.id = "add-entry-btn";
+      addBtn.textContent = "+";
+      addBtn.title = "Dodaj siebie, zespół lub organizację";
+      addBtn.style.cssText = "width:100%;font-size:1.5rem;background:#d4af37;color:#111;border:none;border-radius:8px;padding:8px;cursor:pointer;font-weight:bold;";
+      addLi.appendChild(addBtn);
+      sidebar.appendChild(addLi);
+
+      addBtn.addEventListener("click", () => {
+        document.getElementById("add-modal").style.display = "flex";
+      });
+    });
+
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement({
+        pageLanguage: 'pl',
+        includedLanguages: 'en',
+        autoDisplay: false
+      }, 'google_translate_element');
+    }
+  </script>
+  <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+  <!-- Modal dodawania do Lumen (gładki design) -->
+  <style>
+    #add-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: rgba(8, 6, 4, 0.82);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      justify-content: center;
+      align-items: center;
+      animation: amFade 0.25s ease;
+    }
+    @keyframes amFade { from { opacity: 0; } to { opacity: 1; } }
+    #add-modal .am-card {
+      background: linear-gradient(165deg, #1c1812 0%, #12100c 100%);
+      border: 1px solid rgba(212, 175, 55, 0.45);
+      border-radius: 18px;
+      padding: 28px 28px 22px;
+      max-width: 440px;
+      width: min(92vw, 440px);
+      color: #f4efe4;
+      box-shadow:
+        0 0 0 1px rgba(212, 175, 55, 0.08),
+        0 24px 48px rgba(0, 0, 0, 0.55),
+        0 0 60px rgba(212, 175, 55, 0.06);
+      animation: amSlide 0.3s cubic-bezier(.2,.8,.2,1);
+    }
+    @keyframes amSlide {
+      from { opacity: 0; transform: translateY(12px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    #add-modal .am-card h2 {
+      margin: 0 0 6px;
+      font-size: 1.35rem;
+      font-weight: 600;
+      color: #e8d5a3;
+      letter-spacing: 0.04em;
+    }
+    #add-modal .am-sub {
+      margin: 0 0 20px;
+      font-size: 0.82rem;
+      line-height: 1.45;
+      color: #a89a82;
+    }
+    #add-modal label {
+      display: block;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #c6a96a;
+      margin: 0 0 6px;
+    }
+    #add-modal .am-field { margin-bottom: 14px; }
+    #add-modal select,
+    #add-modal input[type="text"],
+    #add-modal textarea {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 11px 14px;
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(198, 169, 106, 0.28);
+      border-radius: 10px;
+      color: #f4efe4;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    #add-modal select:focus,
+    #add-modal input:focus,
+    #add-modal textarea:focus {
+      border-color: rgba(212, 175, 55, 0.7);
+      box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.12);
+    }
+    #add-modal textarea { resize: vertical; min-height: 64px; }
+    #add-modal .am-file {
+      position: relative;
+      border: 1px dashed rgba(198, 169, 106, 0.4);
+      border-radius: 12px;
+      padding: 18px 14px;
+      text-align: center;
+      background: rgba(212, 175, 55, 0.04);
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    #add-modal .am-file:hover {
+      border-color: rgba(212, 175, 55, 0.7);
+      background: rgba(212, 175, 55, 0.08);
+    }
+    #add-modal .am-file input {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+    }
+    #add-modal .am-file-label {
+      font-size: 0.9rem;
+      color: #d4c4a0;
+      pointer-events: none;
+    }
+    #add-modal .am-file-label strong { color: #e8d5a3; }
+    #add-modal .am-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 18px;
+    }
+    #add-modal .am-btn {
+      flex: 1;
+      padding: 12px 16px;
+      border: none;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.2s, background 0.2s;
+    }
+    #add-modal .am-btn:active { transform: scale(0.98); }
+    #add-modal .am-btn-primary {
+      background: linear-gradient(180deg, #e0c878, #c9a84a);
+      color: #1a150c;
+      box-shadow: 0 4px 16px rgba(201, 168, 74, 0.35);
+    }
+    #add-modal .am-btn-primary:hover {
+      box-shadow: 0 6px 22px rgba(201, 168, 74, 0.45);
+    }
+    #add-modal .am-btn-ghost {
+      flex: 0 0 auto;
+      background: transparent;
+      color: #a89a82;
+      border: 1px solid rgba(168, 154, 130, 0.35);
+      padding-left: 18px;
+      padding-right: 18px;
+    }
+    #add-modal .am-btn-ghost:hover { color: #e8d5a3; border-color: rgba(212, 175, 55, 0.5); }
+    #add-status {
+      margin: 12px 0 0;
+      font-size: 0.85rem;
+      min-height: 1.2em;
+      text-align: center;
+    }
+  </style>
+  <div id="add-modal">
+    <div class="am-card">
+      <h2>Dodaj do Lumen</h2>
+      <p class="am-sub">Prześlij pliki HTML, JS, CSS. Zgłoszenie trafi do moderacji i po zatwierdzeniu pojawi się na liście.</p>
+      <div class="am-field">
+        <label>Typ</label>
+        <select id="add-type">
+          <option value="person">Osoba (ja)</option>
+          <option value="team">Zespół</option>
+          <option value="organization">Organizacja</option>
+        </select>
+      </div>
+      <div class="am-field">
+        <label>Nazwa</label>
+        <input type="text" id="add-name" placeholder="Imię / nazwa zespołu / organizacji" autocomplete="off">
+      </div>
+      <div class="am-field">
+        <label>Opis (opcjonalnie)</label>
+        <textarea id="add-desc" rows="2" placeholder="Krótki opis…"></textarea>
+      </div>
+      <div class="am-field">
+        <label>Pliki</label>
+        <div class="am-file">
+          <input type="file" id="add-files" multiple accept=".html,.htm,.js,.css,.png,.jpg,.jpeg,.gif,.svg,.webp">
+          <div class="am-file-label"><strong>Kliknij lub upuść</strong><br>html · js · css · obrazy</div>
+        </div>
+      </div>
+      <div class="am-actions">
+        <button type="button" class="am-btn am-btn-primary" id="add-submit">Wyślij do moderacji</button>
+        <button type="button" class="am-btn am-btn-ghost" id="add-cancel">Anuluj</button>
+      </div>
+      <p id="add-status"></p>
+    </div>
+  </div>
+
+  <script>
+    // Fix HOME – same window
+    document.getElementById('home-bar-link').addEventListener('click', function(e) {
+      e.preventDefault();
+      window.location.href = '/index.html';
+    });
+
+    document.getElementById('add-cancel').onclick = () => {
+      document.getElementById('add-modal').style.display = 'none';
+    };
+    // podgląd wybranych plików
+    document.getElementById('add-files').addEventListener('change', function () {
+      const label = document.querySelector('#add-modal .am-file-label');
+      if (!label) return;
+      if (this.files && this.files.length) {
+        const names = Array.from(this.files).map(f => f.name).join(', ');
+        label.innerHTML = '<strong>' + this.files.length + ' plik(ów)</strong><br>' + names;
+      } else {
+        label.innerHTML = '<strong>Kliknij lub upuść</strong><br>html · js · css · obrazy';
+      }
+    });
+    // klik w tło zamyka
+    document.getElementById('add-modal').addEventListener('click', function (e) {
+      if (e.target === this) this.style.display = 'none';
+    });
+    document.getElementById('add-submit').onclick = async () => {
+      const name = document.getElementById('add-name').value.trim();
+      const type = document.getElementById('add-type').value;
+      const description = document.getElementById('add-desc').value.trim();
+      const files = document.getElementById('add-files').files;
+      const status = document.getElementById('add-status');
+      if (!name) { status.textContent = 'Podaj nazwę.'; status.style.color = '#c33'; return; }
+      if (!files.length) { status.textContent = 'Dodaj przynajmniej jeden plik.'; status.style.color = '#c33'; return; }
+
+      const fd = new FormData();
+      fd.append('name', name);
+      fd.append('type', type);
+      fd.append('description', description);
+      for (let i = 0; i < files.length; i++) fd.append('files', files[i]);
+
+      status.textContent = 'Wysyłanie…';
+      status.style.color = '#d4af37';
+      try {
+        const res = await fetch('/api/lumen/submit', { method: 'POST', body: fd });
+        const data = await res.json();
+        if (data.ok) {
+          status.textContent = 'Wysłano! Oczekuje na zatwierdzenie admina.';
+          status.style.color = '#0a0';
+          setTimeout(() => {
+            document.getElementById('add-modal').style.display = 'none';
+            status.textContent = '';
+            document.getElementById('add-name').value = '';
+            document.getElementById('add-desc').value = '';
+            document.getElementById('add-files').value = '';
+          }, 2000);
+        } else {
+          status.textContent = 'Błąd: ' + (data.error || 'nieznany');
+          status.style.color = '#c33';
+        }
+      } catch (err) {
+        status.textContent = 'Błąd sieci: ' + err.message;
+        status.style.color = '#c33';
+      }
+    };
+
+    // Fallback EM symbol for missing images
+    document.querySelectorAll('img').forEach(img => {
+      img.addEventListener('error', function() {
+        if (!this.dataset.emFallback) {
+          this.dataset.emFallback = '1';
+          this.src = '/images/elmovelogo.png';
+        }
+      });
+    });
+  </script>
+</body>
+</html>
